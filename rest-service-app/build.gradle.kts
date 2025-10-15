@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
+    id("io.github.bhuyanp.spring-banner-gradle-plugin").version("1.1")
 }
 
 
@@ -36,6 +37,10 @@ tasks.processResources{
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
