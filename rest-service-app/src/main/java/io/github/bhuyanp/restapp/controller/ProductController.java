@@ -1,64 +1,62 @@
 package io.github.bhuyanp.restapp.controller;
 
-import io.github.bhuyanp.restapp.dto.ErrorResponse;
+import io.github.bhuyanp.restapp.dto.AddProductRequest;
 import io.github.bhuyanp.restapp.exception.DownstreamException;
 import io.github.bhuyanp.restapp.exception.ServiceException;
 import io.github.bhuyanp.restapp.model.Product;
-
+import io.github.bhuyanp.restapp.service.ProductService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
-@RestController
-@RequestMapping("/products/v1")
 @Tag(name = "Products")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(ProductController.PRODUCT_API_PATH)
+@ApiResponse(responseCode = "403", description = "Forbidden. Invalid or missing bearer token.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
 public class ProductController {
+    public static final String PRODUCT_API_PATH = "/v1/products";
 
-    public static final String X_AUTH_TOKEN = "Authorization";
+    private final ProductService productService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @ApiResponse(responseCode = "404", description = "No products found.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Unable to process the request.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "404", description = "No products found.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "500", description = "Unable to process the request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     public ResponseEntity<List<Product>> getProducts() {
-        return ResponseEntity.ok(List.of(
-                        new Product("id1", "Product 1", 11.23, LocalDateTime.now()),
-                        new Product("id2", "Product 2", 12.23, LocalDateTime.now()),
-                        new Product("id3", "Product 3", 13.23, LocalDateTime.now())
-                )
-        );
+        return ResponseEntity.ok(productService.getProducts());
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponse(responseCode = "404", description = "No product found matching the id.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Unable to process the request.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "404", description = "No product found matching the id.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "500", description = "Unable to process the request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
-        if (id.equals("id1")) {
-            return ResponseEntity.ok(new Product("id1", "Product 1", 12.23, LocalDateTime.now()));
-        } else {
-            throw new DownstreamException(HttpStatus.NOT_FOUND, "No product found with id " + id);
-        }
+        Product product = productService.getProduct(id).orElseThrow(() -> new DownstreamException(HttpStatus.NOT_FOUND, "No product found with id " + id));
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Unable to save the product.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<Product> addProduct(@Valid @RequestBody Product product) {
-        if ((int) (Math.random() * 2) == 0) {
-            throw new ServiceException("Failed to create service record.");
+    @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "500", description = "Unable to save the product.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    public ResponseEntity<Product> addProduct(@Valid @RequestBody AddProductRequest addProductRequest) {
+        if (new Random().nextInt(3) == 0) {
+            throw new ServiceException("Failed to create product record.");
         }
-        return ResponseEntity.ok(new Product("id1", product.title(), product.price(), LocalDateTime.now()));
+        Product addedProduct = productService.addProduct(addProductRequest);
+        return ResponseEntity.ok(addedProduct);
     }
 
 }

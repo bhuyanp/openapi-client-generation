@@ -6,7 +6,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -29,6 +27,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static io.github.bhuyanp.restapp.controller.ProductController.PRODUCT_API_PATH;
 
 @Configuration
 @EnableWebSecurity
@@ -45,8 +45,7 @@ public class AppSecurityConfig {
                     httpAuth
                             .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                             .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                            .requestMatchers("/products/**").hasAnyRole("USER", "ADMIN")
-                            //.requestMatchers("/authenticate", "/swagger-ui/**","/v3/api-docs**").permitAll()
+                            .requestMatchers(PRODUCT_API_PATH+"/**").hasAnyRole("USER", "ADMIN")
                             .anyRequest().permitAll()
             )
             .sessionManagement(se -> se.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,7 +1,9 @@
 spring:
+  main:
+    lazy-initialization: true
   application:
     name: REST Services Application
     version: ${version}
 
 jwt:
-  secret: some-secret-and-it-should-be-long
+  secret: some-secret-and-it-should-be-longer

@@ -1,7 +1,15 @@
 spring:
+  main:
+    lazy-initialization: true
   application:
     name: client-app
 
 server:
   port: 8090
+
+## These should come from a vault
+api:
+  product:
+    user: user
+    pass: pass1
 

@@ -1,7 +1,6 @@
 package io.github.bhuyanp.restapp.controller;
 
 import io.github.bhuyanp.restapp.dto.AuthRequest;
-import io.github.bhuyanp.restapp.dto.ErrorResponse;
 import io.github.bhuyanp.restapp.dto.TokenResponse;
 import io.github.bhuyanp.restapp.util.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +11,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,12 +32,13 @@ public class LoginController {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/login", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
-    @Operation(operationId = "authenticate", responses = {
-            @ApiResponse(responseCode = "200", description = "api_key to be used in the secured-ping endpoint", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = TokenResponse.class)) }),
-            @ApiResponse(responseCode = "401", description = "Unauthorized request", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
-    @SecurityRequirements()
-    public ResponseEntity<TokenResponse> createAuthenticationToken(@RequestBody @Valid AuthRequest request) {
+    @Operation(operationId = "authenticate", description = "Returns valid JWT token")
+    @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "500", description = "Failed to obtain the token.", content = {@Content(schema = @Schema(implementation = ProblemDetail.class))})
+    @SecurityRequirements //No security requirements
+    public ResponseEntity<TokenResponse> authenticate(@RequestBody @Valid AuthRequest request) {
         authenticate(request.userName(), request.password());
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.userName());
         String token = jwtTokenUtil.generateToken(userDetails);

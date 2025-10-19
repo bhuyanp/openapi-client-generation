@@ -2,7 +2,6 @@ package io.github.bhuyanp.restapp.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +10,10 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+/**
+ *
+ * @author Prasanta Bhuyan(mailto:prasanta.k.bhuyan@gmail.com)
+ */
 @Component
 public class JwtTokenUtil {
     @Value("${jwt.secret}")
@@ -33,10 +36,9 @@ public class JwtTokenUtil {
     public Claims getClaims(String token) {
         SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
         return Jwts.parser()
-                .setSigningKey(secretKey)
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token).getPayload();
     }
 
 
