@@ -1,6 +1,7 @@
 package io.github.bhuyanp.clientapp.config;
 
 import io.github.bhuyanp.clientapp.exception.DownstreamException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,13 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class AuthWebClientConfig {
 
+    @Value("${api.auth.endpoint}")
+    private String authApiEndpoint;
+
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
         return builder
-                .baseUrl("http://localhost:8080")
+                .baseUrl(authApiEndpoint)
                 .defaultStatusHandler(HttpStatusCode::isError, clientResponse ->
                         clientResponse.bodyToMono(String.class)
                                 .flatMap(errorBody -> {

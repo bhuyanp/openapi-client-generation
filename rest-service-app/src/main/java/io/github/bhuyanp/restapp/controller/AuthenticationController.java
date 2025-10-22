@@ -27,20 +27,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Authentication")
-public class LoginController {
+public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/login", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/authenticate", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(operationId = "authenticate", description = "Returns valid JWT token")
     @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ApiResponse(responseCode = "500", description = "Failed to obtain the token.", content = {@Content(schema = @Schema(implementation = ProblemDetail.class))})
     @SecurityRequirements //No security requirements
     public ResponseEntity<TokenResponse> authenticate(@RequestBody @Valid AuthRequest request) {
-        authenticate(request.userName(), request.password());
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.userName());
+        authenticate(request.username(), request.password());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
         String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new TokenResponse(token));
     }

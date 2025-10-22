@@ -1,9 +1,10 @@
 package io.github.bhuyanp.restapp.util;
 
+import io.github.bhuyanp.restapp.config.TokenConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +16,13 @@ import java.util.Date;
  * @author Prasanta Bhuyan(mailto:prasanta.k.bhuyan@gmail.com)
  */
 @Component
+@RequiredArgsConstructor
 public class JwtTokenUtil {
-    @Value("${jwt.secret}")
-    private String secret;
+
+    private final TokenConfig tokenConfig;
 
     public String generateToken(UserDetails userDetails) {
-        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        SecretKey secretKey = Keys.hmacShaKeyFor(tokenConfig.getSecret().getBytes());
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
@@ -34,7 +36,7 @@ public class JwtTokenUtil {
     }
 
     public Claims getClaims(String token) {
-        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        SecretKey secretKey = Keys.hmacShaKeyFor(tokenConfig.getSecret().getBytes());
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
