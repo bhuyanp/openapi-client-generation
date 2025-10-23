@@ -36,15 +36,17 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("com.github.ben-manes.caffeine:caffeine")
-	implementation("io.github.bhuyanp:service-client-httpinterface:0.0.2")
+	implementation("io.github.bhuyanp:rest-service-app:+:clientsdk")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner")
-	testImplementation("io.github.bhuyanp:rest-service-app:0.0.2")
+	testImplementation("io.github.bhuyanp:rest-service-app:+:stubs")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 dependencyManagement {
 	imports {
