@@ -1,3 +1,4 @@
+import io.github.bhuyanp.gradle.theme.ThemePreset
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.springframework.cloud.contract.verifier.config.TestFramework
 import org.springframework.cloud.contract.verifier.config.TestMode
@@ -13,6 +14,7 @@ plugins {
     id("org.openapi.generator") version "7.16.0"
 }
 
+
 extra["springCloudVersion"] = "2025.0.0"
 
 group = "io.github.bhuyanp"
@@ -24,6 +26,7 @@ repositories {
 }
 
 java {
+    withSourcesJar()
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
     }
@@ -101,6 +104,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
     runtimeOnly("com.h2database:h2")
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
@@ -112,6 +116,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
 }
 
 dependencyManagement {
@@ -150,7 +155,9 @@ tasks.withType<Test> {
 }
 
 publishing {
+
     publications {
+
         create<MavenPublication>("stubsPublication") {
             artifact(tasks.bootJar)
             artifact(tasks.verifierStubsJar)
@@ -168,4 +175,8 @@ publishing {
     repositories {
         mavenLocal()
     }
+}
+
+springBanner{
+    themePreset = ThemePreset.SURPRISE_ME
 }

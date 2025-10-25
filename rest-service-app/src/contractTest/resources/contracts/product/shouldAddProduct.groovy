@@ -19,7 +19,7 @@ Contract.make {
         )
     }
     response {
-        status HttpStatus.OK.value()
+        status HttpStatus.CREATED.value()
         headers {
             contentType(applicationJson())
         }

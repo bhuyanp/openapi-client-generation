@@ -51,14 +51,14 @@ public class ProductController {
     public ResponseEntity<Product> addProduct(@Valid @RequestBody ProductRequest productRequest) {
         Product addedProduct = productService.addProduct(productRequest);
         log.info("Product added: {}",addedProduct);
-        return ResponseEntity.ok(addedProduct);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
     }
 
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ApiResponse(responseCode = "500", description = "Unable to update the product.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-    public ResponseEntity<Void> updateProduct(@Valid @RequestBody ProductRequest incomingProductRequest, @PathVariable String id) {
+    public ResponseEntity<Product> updateProduct(@Valid @RequestBody ProductRequest incomingProductRequest, @PathVariable String id) {
         productService.updateProduct(id, incomingProductRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -68,7 +68,7 @@ public class ProductController {
     @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ApiResponse(responseCode = "500", description = "Unable to partially update the product.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     public ResponseEntity<Void> partiallyUpdateProduct(@RequestBody ProductRequest incomingProductRequest, @PathVariable String id) {
-        productService.partiallyUpdateProduct(id, incomingProductRequest);
+        productService.updateProduct(id, incomingProductRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

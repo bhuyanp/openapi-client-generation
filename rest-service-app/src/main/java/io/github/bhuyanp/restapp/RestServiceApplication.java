@@ -1,6 +1,6 @@
 package io.github.bhuyanp.restapp;
 
-import io.github.bhuyanp.restapp.dto.Mappers;
+import io.github.bhuyanp.restapp.util.Mappers;
 import io.github.bhuyanp.restapp.dto.Product;
 import io.github.bhuyanp.restapp.repo.ProductsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,13 @@ public class RestServiceApplication {
 	}
 
 
-	@Autowired
-	ProductsRepo productsRepo;
-	@Bean
-	ApplicationRunner applicationRunner(){
-		return args->{
-			productsRepo.save(Mappers.PRODUCT_TO_PRODUCT_ENTITY.apply(new Product(null, "Product 1", Product.TYPE.ELECTRONICS,11.23, LocalDateTime.now(), null)));
-			productsRepo.save(Mappers.PRODUCT_TO_PRODUCT_ENTITY.apply(new Product(null, "Product 2", Product.TYPE.BABY, 12.23, LocalDateTime.now(), null)));
-		};
-	}
+//	@Autowired
+//	ProductsRepo productsRepo;
+//	@Bean
+//	ApplicationRunner applicationRunner(){
+//		return args->{
+//			productsRepo.save(Mappers.PRODUCT_TO_PRODUCT_ENTITY.apply(new Product(null, "Product 1", Product.TYPE.ELECTRONICS,11.23, LocalDateTime.now(), null)));
+//			productsRepo.save(Mappers.PRODUCT_TO_PRODUCT_ENTITY.apply(new Product(null, "Product 2", Product.TYPE.BABY, 12.23, LocalDateTime.now(), null)));
+//		};
+//	}
 }
