@@ -40,13 +40,12 @@ configurations {
 }
 
 
-
 // Client generation
 val clientSourceFolder = "$projectDir/build/clientSdk"
 val clientTargetFolder = "$projectDir/src/clientSdk"
 sourceSets {
     create("clientSdk") {
-        java{
+        java {
             srcDir("$clientTargetFolder/java")
             compileClasspath += sourceSets["main"].compileClasspath
             runtimeClasspath += sourceSets["main"].runtimeClasspath
@@ -150,14 +149,46 @@ tasks.contractTest {
 }
 // Contract Stub Generation and Testing
 
-
+// Testing
 tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.jacocoTestReport{
+
+sourceSets {
+    create("integrationTest") {
+        java {
+            srcDir("src/integrationTest/java")
+            compileClasspath += sourceSets["main"].output + sourceSets["main"].compileClasspath + sourceSets["test"].compileClasspath
+            runtimeClasspath += sourceSets["main"].output + sourceSets["main"].runtimeClasspath + sourceSets["test"].runtimeClasspath
+        }
+    }
+    create("smokeTest") {
+        java {
+            srcDir("src/smokeTest/java")
+            compileClasspath += sourceSets["main"].output + sourceSets["main"].compileClasspath + sourceSets["test"].compileClasspath
+            runtimeClasspath += sourceSets["main"].output + sourceSets["main"].compileClasspath + sourceSets["test"].compileClasspath
+        }
+    }
+}
+val integrationTest = tasks.register<Test>("integrationTest") {
+    description = "Runs integration tests."
+    group = "Verification"
+    useJUnitPlatform()
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+}
+val smokeTest = tasks.register<Test>("smokeTest") {
+    description = "Runs smoke tests."
+    group = "Verification"
+    useJUnitPlatform()
+    testClassesDirs = sourceSets["smokeTest"].output.classesDirs
+    classpath = sourceSets["smokeTest"].runtimeClasspath
+}
+
+tasks.jacocoTestReport {
     dependsOn(tasks.test)
-    reports{
+    reports {
         xml.required = true
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir("reports/jacocoHtml")
@@ -173,16 +204,34 @@ tasks.jacocoTestCoverageVerification {
                 "io.github.bhuyanp.restapp.service.*"
             )
             limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
                 minimum = "0.8".toBigDecimal()
             }
+            limit {
+                counter = "METHOD"
+                value = "COVEREDRATIO"
+                minimum = "1.0".toBigDecimal()
+            }
+            limit {
+                counter = "BRANCH"
+                value = "COVEREDRATIO"
+                minimum = "1.0".toBigDecimal()
+            }
+            limit {
+                counter = "COMPLEXITY"
+                value = "COVEREDRATIO"
+                minimum = "1.0".toBigDecimal()
+            }
+
         }
     }
 }
 
-tasks.check{
-    dependsOn(tasks.jacocoTestCoverageVerification)
+tasks.check {
+    dependsOn(tasks.jacocoTestCoverageVerification, smokeTest, integrationTest)
 }
-
+// Testing
 publishing {
     publications {
         create<MavenPublication>("stubsPublication") {
@@ -204,6 +253,6 @@ publishing {
     }
 }
 
-springBanner{
+springBanner {
     themePreset = ThemePreset.SURPRISE_ME
 }
