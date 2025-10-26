@@ -7,6 +7,7 @@ plugins {
     java
     `java-library`
     `maven-publish`
+    jacoco
     id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
     id("io.github.bhuyanp.spring-banner-gradle-plugin").version("1.1")
@@ -154,10 +155,36 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.jacocoTestReport{
+    dependsOn(tasks.test)
+    reports{
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir("reports/jacocoHtml")
+    }
+}
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.jacocoTestReport)
+    violationRules {
+        rule {
+            element = "CLASS"
+            includes = listOf(
+                "io.github.bhuyanp.restapp.controller.ProductController",
+                "io.github.bhuyanp.restapp.service.*"
+            )
+            limit {
+                minimum = "0.8".toBigDecimal()
+            }
+        }
+    }
+}
+
+tasks.check{
+    dependsOn(tasks.jacocoTestCoverageVerification)
+}
+
 publishing {
-
     publications {
-
         create<MavenPublication>("stubsPublication") {
             artifact(tasks.bootJar)
             artifact(tasks.verifierStubsJar)
