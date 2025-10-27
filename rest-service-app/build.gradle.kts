@@ -105,7 +105,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
-    runtimeOnly("com.h2database:h2")
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
     runtimeOnly("org.postgresql:postgresql")
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
@@ -120,7 +121,6 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-
 }
 
 dependencyManagement {
