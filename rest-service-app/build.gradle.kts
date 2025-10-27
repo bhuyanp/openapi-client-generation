@@ -106,6 +106,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.postgresql:postgresql")
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
@@ -114,6 +115,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
     testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -135,7 +139,10 @@ contracts {
 }
 
 tasks.processResources {
-    filesMatching("application.yaml") {
+    filesMatching("application.yml") {
+        expand(properties)
+    }
+    filesMatching("application*.yml") {
         expand(properties)
     }
 }
@@ -143,15 +150,21 @@ tasks.processResources {
 tasks.contractTest {
     useJUnitPlatform()
     testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
+        exceptionFormat = TestExceptionFormat.SHORT
         events("passed", "failed", "skipped")
     }
+    maxParallelForks = 4
 }
 // Contract Stub Generation and Testing
 
 // Testing
 tasks.withType<Test> {
     useJUnitPlatform()
+    testLogging {
+        exceptionFormat = TestExceptionFormat.SHORT
+        events("passed", "skipped", "failed")
+    }
+    maxParallelForks = 4
 }
 
 
@@ -167,7 +180,7 @@ sourceSets {
         java {
             srcDir("src/smokeTest/java")
             compileClasspath += sourceSets["main"].output + sourceSets["main"].compileClasspath + sourceSets["test"].compileClasspath
-            runtimeClasspath += sourceSets["main"].output + sourceSets["main"].compileClasspath + sourceSets["test"].compileClasspath
+            runtimeClasspath += sourceSets["main"].output + sourceSets["main"].runtimeClasspath + sourceSets["test"].runtimeClasspath
         }
     }
 }
@@ -175,13 +188,20 @@ val integrationTest = tasks.register<Test>("integrationTest") {
     description = "Runs integration tests."
     group = "Verification"
     useJUnitPlatform()
+    mustRunAfter(tasks.test)
     testClassesDirs = sourceSets["integrationTest"].output.classesDirs
     classpath = sourceSets["integrationTest"].runtimeClasspath
+    testLogging {
+        exceptionFormat = TestExceptionFormat.SHORT
+        events("passed", "skipped", "failed")
+    }
+    maxParallelForks = 4
 }
 val smokeTest = tasks.register<Test>("smokeTest") {
     description = "Runs smoke tests."
     group = "Verification"
     useJUnitPlatform()
+    mustRunAfter(tasks.test)
     testClassesDirs = sourceSets["smokeTest"].output.classesDirs
     classpath = sourceSets["smokeTest"].runtimeClasspath
 }

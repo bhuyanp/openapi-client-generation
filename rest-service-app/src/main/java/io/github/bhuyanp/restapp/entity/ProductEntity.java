@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static jakarta.persistence.GenerationType.UUID;
 
@@ -14,14 +15,15 @@ import static jakarta.persistence.GenerationType.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="products")
+@Table(name="product")
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy=UUID)
     @Column(name="id")
-    private String id;
+    private UUID id;
     @Column(name="title")
     private String title;
+    @Enumerated(EnumType.STRING)
     @Column(name="type")
     private Product.TYPE type ;
     @Column(name="price")

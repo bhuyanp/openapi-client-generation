@@ -33,7 +33,9 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @ApiResponse(responseCode = "500", description = "Unable to process the request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     public ResponseEntity<List<Product>> getProducts() {
-        return ResponseEntity.ok(productService.getProducts());
+        List<Product> products = productService.getProducts();
+        log.info("Products found: {}",products);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,7 +43,9 @@ public class ProductController {
     @ApiResponse(responseCode = "500", description = "Unable to process the request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
-        return ResponseEntity.ok(productService.getProduct(id));
+        Product product = productService.getProduct(id);
+        log.info("Product found: {}",product);
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

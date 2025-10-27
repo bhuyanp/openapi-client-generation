@@ -1,0 +1,2 @@
+insert into product (title, type, price, created_date) values ('Product A', 'ELECTRONICS', 12.12, NOW());
+insert into product (title, type, price, created_date) values ('Product B', 'BEAUTY', 22.12, NOW());

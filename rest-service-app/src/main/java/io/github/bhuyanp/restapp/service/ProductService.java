@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -35,7 +36,7 @@ public class ProductService {
 
 
     public Product getProduct(@NotBlank String id) {
-        return productsRepo.findById(id).map(Mappers.PRODUCT_ENTITY_TO_PRODUCT).orElseThrow(() -> new DownstreamException(HttpStatus.NOT_FOUND, "No product found with id " + id));
+        return productsRepo.findById(UUID.fromString(id)).map(Mappers.PRODUCT_ENTITY_TO_PRODUCT).orElseThrow(() -> new DownstreamException(HttpStatus.NOT_FOUND, "No product found with id " + id));
     }
 
     public Product updateProduct(@NotBlank String id, @NotNull ProductRequest incomingProductRequest) {

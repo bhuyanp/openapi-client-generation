@@ -8,7 +8,7 @@ public class HomeController {
 
     @GetMapping
     String home(){
-        return "redirect:/swaggerui.html";
+        return "redirect:/swagger-ui.html";
     }
 
 }

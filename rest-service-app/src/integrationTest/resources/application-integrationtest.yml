@@ -1,0 +1,10 @@
+spring:
+  sql:
+    init:
+      mode: ALWAYS
+
+#These should move to a vault
+token:
+  user: user
+  pass: pass1
+

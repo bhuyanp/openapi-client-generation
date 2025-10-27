@@ -31,9 +31,10 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
+    public static final String AUTHENTICATION_API_PATH = "/authenticate";
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "/authenticate", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = AUTHENTICATION_API_PATH, produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(operationId = "authenticate", description = "Returns valid JWT token")
     @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ApiResponse(responseCode = "500", description = "Failed to obtain the token.", content = {@Content(schema = @Schema(implementation = ProblemDetail.class))})

@@ -1,0 +1,13 @@
+spring:
+  main:
+    lazy-initialization: true
+  application:
+    name: REST Services Application
+    version: ${version}
+  config:
+    import: classpath:autoconfigure-exclusions.yml
+
+
+token:
+  secret: some-secret-and-it-should-be-longer
+
