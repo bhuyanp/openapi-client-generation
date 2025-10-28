@@ -142,9 +142,6 @@ tasks.processResources {
     filesMatching("application.yml") {
         expand(properties)
     }
-    filesMatching("application*.yml") {
-        expand(properties)
-    }
 }
 
 tasks.contractTest {
@@ -163,7 +160,7 @@ tasks.withType<Test> {
         exceptionFormat = TestExceptionFormat.SHORT
         events("passed", "skipped", "failed")
     }
-    maxParallelForks = 4
+//    maxParallelForks = 4
 }
 
 
@@ -194,7 +191,7 @@ val integrationTest = tasks.register<Test>("integrationTest") {
         exceptionFormat = TestExceptionFormat.SHORT
         events("passed", "skipped", "failed")
     }
-    maxParallelForks = 4
+//    maxParallelForks = 4
 }
 val smokeTest = tasks.register<Test>("smokeTest") {
     description = "Runs smoke tests."

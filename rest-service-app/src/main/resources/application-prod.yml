@@ -3,16 +3,16 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/productdb
+    url: jdbc:postgresql://localhost:5433/productdb
     username: product_app
     password: pass1
     driverClassName: org.postgresql.Driver
   flyway:
-    url: jdbc:postgresql://localhost:5432/productdb
-    user: product_app
-    password: pass1
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: validate

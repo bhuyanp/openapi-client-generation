@@ -1,22 +1,6 @@
 version: '3.3'
 
 services:
-  product-app-devl:
-    build: .
-    container_name: "product-app-devl"
-    ports:
-      - 8080:8080
-    environment:
-      - "SPRING_PROFILES_ACTIVE=devl"
-
-  product-app-prod:
-    build: .
-    container_name: "product-app-prod"
-    ports:
-      - 9080:9080
-    environment:
-      - "SPRING_PROFILES_ACTIVE=prod"
-
   product-db-devl:
     image: 'postgres:latest'
     restart: always
@@ -25,14 +9,16 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       POSTGRES_USER: product_app
       POSTGRES_PASSWORD: pass1
-      MYSQL_DATABASE: product
       POSTGRES_DB: productdb
     ports:
       - "5432:5432"
-    expose:
-      - "5432"
     volumes:
       - ${PWD}/product-data-devl/:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   product-db-prod:
     image: 'postgres:latest'
@@ -42,14 +28,43 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       POSTGRES_USER: product_app
       POSTGRES_PASSWORD: pass1
-      MYSQL_DATABASE: product
       POSTGRES_DB: productdb
     ports:
       - "5433:5432"
-    expose:
-      - "5433"
     volumes:
       - ${PWD}/product-data-prod/:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  product-app-devl:
+    build:
+      context: .
+    image: product-app
+    container_name: "product-app-devl"
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: devl
+      SPRING_DATASOURCE_URL: jdbc:postgresql://product-db-devl:5432/productdb
+    depends_on:
+      product-db-devl:
+        condition: service_healthy
+
+  product-app-prod:
+    build: .
+    image: product-app
+    container_name: "product-app-prod"
+    ports:
+      - 9080:9080
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://product-db-prod:5432/productdb
+    depends_on:
+      product-db-prod:
+        condition: service_healthy
 
 
 volumes:
