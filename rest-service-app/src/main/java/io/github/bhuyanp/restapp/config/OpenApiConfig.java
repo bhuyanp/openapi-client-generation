@@ -21,13 +21,15 @@ public class OpenApiConfig {
     private String appName;
     @Value("${spring.application.version}")
     private String appVersion;
+    @Value("${spring.profiles.active:PROD}")
+    private String activeProfile;
 
     @Bean
     public OpenAPI openApi() {
         return new OpenAPI()
                 .components(new Components())
                 .info(new Info()
-                        .title(appName)
+                        .title(appName+" "+activeProfile)
                         .version(appVersion)
                         .license(new License().name("XYZ Corp").identifier("License identifier"))
                         .description("""

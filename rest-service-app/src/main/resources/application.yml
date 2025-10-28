@@ -1,11 +1,14 @@
 spring:
+  profiles:
+    default: devl
   main:
     lazy-initialization: true
   application:
     name: REST Services Application
     version: ${version}
   config:
-    import: classpath:autoconfigure-exclusions.yml
+    import:
+      - autoconfigure-exclusions.yml
 
 
 token:

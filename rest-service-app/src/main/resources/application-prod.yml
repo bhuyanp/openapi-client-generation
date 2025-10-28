@@ -1,0 +1,18 @@
+server:
+  port: 9080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productdb
+    username: product_app
+    password: pass1
+    driverClassName: org.postgresql.Driver
+  flyway:
+    url: jdbc:postgresql://localhost:5432/productdb
+    user: product_app
+    password: pass1
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate

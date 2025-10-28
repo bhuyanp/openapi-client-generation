@@ -153,7 +153,6 @@ tasks.contractTest {
         exceptionFormat = TestExceptionFormat.SHORT
         events("passed", "failed", "skipped")
     }
-    maxParallelForks = 4
 }
 // Contract Stub Generation and Testing
 

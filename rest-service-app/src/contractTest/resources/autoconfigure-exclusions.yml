@@ -1,0 +1,24 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfiguration
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlQueryByExampleAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlQuerydslAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlRSocketAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlReactiveQueryByExampleAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlReactiveQuerydslAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlWebFluxAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlWebFluxSecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlWebMvcAutoConfiguration
+      - org.springframework.boot.autoconfigure.graphql.GraphQlWebMvcSecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration
+      - org.springframework.boot.autoconfigure.cassandra.CassandraDataAutoConfiguration
+      - org.springframework.boot.autoconfigure.cassandra.CassandraReactiveDataAutoConfiguration
+      - org.springframework.boot.autoconfigure.cassandra.CassandraReactiveRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.cassandra.CassandraRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
