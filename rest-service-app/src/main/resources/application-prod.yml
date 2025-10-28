@@ -12,7 +12,6 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
       ddl-auto: validate
