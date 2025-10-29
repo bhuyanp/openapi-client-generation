@@ -39,8 +39,39 @@ configurations {
     }
 }
 
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web"){
+        exclude(group="org.springframework.boot", module="spring-boot-starter-tomcat")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
+    runtimeOnly("org.postgresql:postgresql")
+    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+}
 
-// Client generation
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+}
+
+// Client sdk generation
 val clientSourceFolder = "$projectDir/build/clientSdk"
 val clientTargetFolder = "$projectDir/src/clientSdk"
 sourceSets {
@@ -89,48 +120,21 @@ val copyClientSdk = tasks.register<Copy>("copyClientSdk") {
 val compileClientSdkJavaTask = tasks.named<JavaCompile>("compileClientSdkJava") {
     dependsOn(copyClientSdk)
 }
-val clientSdkJarTask = tasks.register<Jar>("clientSdkJar") {
+val clientSdkArtifact = tasks.register<Jar>("clientSdkJar") {
     from(compileClientSdkJavaTask)
-    archiveBaseName = project.name
-    archiveClassifier = "clientsdk"
+    archiveBaseName = project.name+"clientsdk"
+}
+val clientSdkSourceArtifact = tasks.register<Jar>("clientSdkSourceJar") {
+    dependsOn(copyClientSdk)
+    from("$clientTargetFolder/java")
+    archiveBaseName = project.name+"clientsdk"
+    archiveClassifier="sources"
 }
 
 tasks.assemble {
-    dependsOn(clientSdkJarTask)
+    dependsOn(clientSdkArtifact, clientSdkSourceArtifact)
 }
-// Client generation
-
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web"){
-        exclude(group="org.springframework.boot", module="spring-boot-starter-tomcat")
-    }
-    implementation("org.springframework.boot:spring-boot-starter-undertow")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
-    implementation("org.flywaydb:flyway-core")
-    implementation("org.flywaydb:flyway-database-postgresql")
-    runtimeOnly("org.postgresql:postgresql")
-    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
+// Client sdk generation
 
 // Contract Stub Generation and Testing
 contracts {
@@ -256,7 +260,20 @@ publishing {
         create<MavenPublication>("stubsPublication") {
             artifact(tasks.bootJar)
             artifact(tasks.verifierStubsJar)
-            artifact(clientSdkJarTask)
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+        }
+
+        create<MavenPublication>("clientSDKPublication") {
+            artifact(clientSdkArtifact)
+            artifact(clientSdkSourceArtifact)
+            artifactId = "rest-service-appclient"
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
