@@ -45,4 +45,9 @@ public class ProductService {
         return Mappers.PRODUCT_ENTITY_TO_PRODUCT.apply(savedProductEntity);
     }
 
+    public void deleteProduct(@NotBlank String id) {
+        getProduct(id);
+        productsRepo.deleteById(UUID.fromString(id));
+    }
+
 }

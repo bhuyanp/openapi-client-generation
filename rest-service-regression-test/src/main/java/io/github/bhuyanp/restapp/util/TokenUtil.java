@@ -1,4 +1,4 @@
-package io.github.bhuyanp.clientapp.util;
+package io.github.bhuyanp.restapp.util;
 
 import io.github.bhuyanp.restapp.client.api.AuthenticationApi;
 import io.github.bhuyanp.restapp.client.model.AuthRequest;

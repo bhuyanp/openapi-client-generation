@@ -88,7 +88,7 @@ openApiGenerate {
     //https://openapi-generator.tech/docs/generators/spring
     generatorName.set("spring")
     library.set("spring-http-interface")
-    inputSpec.set("$projectDir/rest-service-spec.yaml")
+    inputSpec.set("$projectDir/rest-service-spec.json")
     outputDir.set(clientSourceFolder)
     invokerPackage.set("io.github.bhuyanp.restapp.client")
     apiPackage.set("io.github.bhuyanp.restapp.client.api")

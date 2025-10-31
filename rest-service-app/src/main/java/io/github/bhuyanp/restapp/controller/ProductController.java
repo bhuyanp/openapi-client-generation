@@ -61,6 +61,7 @@ public class ProductController {
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "404", description = "No product found matching the id.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ApiResponse(responseCode = "500", description = "Unable to update the product.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     public ResponseEntity<Product> updateProduct(@Valid @RequestBody ProductRequest incomingProductRequest, @PathVariable String id) {
         productService.updateProduct(id, incomingProductRequest);
@@ -70,9 +71,20 @@ public class ProductController {
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "404", description = "No product found matching the id.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ApiResponse(responseCode = "500", description = "Unable to partially update the product.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     public ResponseEntity<Void> partiallyUpdateProduct(@RequestBody ProductRequest incomingProductRequest, @PathVariable String id) {
         productService.updateProduct(id, incomingProductRequest);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponse(responseCode = "404", description = "No product found matching the id.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "500", description = "Unable to partially update the product.", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
+        productService.deleteProduct(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

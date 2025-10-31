@@ -1,7 +1,7 @@
-package io.github.bhuyanp.clientapp.config;
+package io.github.bhuyanp.restapp.config;
 
-import io.github.bhuyanp.clientapp.exception.DownstreamException;
 import io.github.bhuyanp.restapp.client.api.AuthenticationApi;
+import io.github.bhuyanp.restapp.exception.DownstreamException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

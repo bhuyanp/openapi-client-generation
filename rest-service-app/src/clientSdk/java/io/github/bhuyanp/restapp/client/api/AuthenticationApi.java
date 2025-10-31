@@ -6,20 +6,14 @@
 package io.github.bhuyanp.restapp.client.api;
 
 import io.github.bhuyanp.restapp.client.model.AuthRequest;
-import io.github.bhuyanp.restapp.client.model.ProblemDetail;
 import io.github.bhuyanp.restapp.client.model.TokenResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import jakarta.annotation.Generated;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.service.annotation.HttpExchange;
 
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-10-23T17:05:35.167278-04:00[America/New_York]", comments = "Generator version: 7.16.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-10-31T06:19:25.366540-04:00[America/New_York]", comments = "Generator version: 7.16.0")
 public interface AuthenticationApi {
 
     /**

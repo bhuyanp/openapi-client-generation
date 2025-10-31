@@ -1,0 +1,10 @@
+## These should come from a vault
+api:
+  product:
+    user: user
+    pass: pass1
+    endpoint: http://localhost:8080
+  auth:
+    endpoint: http://localhost:8080
+
+

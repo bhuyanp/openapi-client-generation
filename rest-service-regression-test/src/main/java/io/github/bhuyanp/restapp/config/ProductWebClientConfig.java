@@ -1,8 +1,9 @@
-package io.github.bhuyanp.clientapp.config;
+package io.github.bhuyanp.restapp.config;
 
-import io.github.bhuyanp.clientapp.exception.DownstreamException;
-import io.github.bhuyanp.clientapp.util.TokenUtil;
+
 import io.github.bhuyanp.restapp.client.api.ProductsApi;
+import io.github.bhuyanp.restapp.exception.DownstreamException;
+import io.github.bhuyanp.restapp.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

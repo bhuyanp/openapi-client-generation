@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,6 +64,7 @@ class ProductControllerTest {
         when(productService.getProduct("id1")).thenReturn(products.getFirst());
         when(productService.addProduct(new ProductRequest("title1", Product.TYPE.ELECTRONICS, 12.12))).thenReturn(products.getFirst());
         when(productService.updateProduct("id2",new ProductRequest("title1", Product.TYPE.ELECTRONICS, 12.12))).thenReturn(products.getFirst());
+        doNothing().when(productService).deleteProduct("id1");
     }
 
     @Test
@@ -171,6 +173,16 @@ class ProductControllerTest {
                         .content(objectMapper.writeValueAsString(productRequest));
         mockMvc.perform(putRequestBuilder)
                 .andExpect(status().isNoContent());
+    }
 
+    @Test
+    void deleteProduct() throws Exception {
+        MockHttpServletRequestBuilder putRequestBuilder =
+                MockMvcRequestBuilders.delete(ProductController.PRODUCT_API_PATH+"/id1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8);
+        mockMvc.perform(putRequestBuilder)
+                .andExpect(status().isNoContent());
     }
 }

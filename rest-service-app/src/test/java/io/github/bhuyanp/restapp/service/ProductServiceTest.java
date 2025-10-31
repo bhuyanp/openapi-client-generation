@@ -198,4 +198,21 @@ class ProductServiceTest {
                 .hasFieldOrPropertyWithValue("updatedDate", updatedDate);
     }
 
+
+    @Test
+    void deleteProduct_shouldRemoveProduct() {
+        // given
+        LocalDateTime createdDate = LocalDateTime.now().minusDays(1);
+        UUID id1 = UUID.randomUUID();
+        ProductEntity existingProductEntity = new ProductEntity(id1,"title1",  Product.TYPE.ELECTRONICS, 12.12, createdDate, null);
+
+        // when
+        when(productsRepo.findById(id1)).thenReturn(Optional.of(existingProductEntity));
+        doNothing().when(productsRepo).deleteById(id1);
+        productService.deleteProduct(id1.toString());
+
+        // then
+        verify(productsRepo,times(1)).deleteById(any());
+    }
+
 }

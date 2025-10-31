@@ -1,22 +1,16 @@
 package io.github.bhuyanp.restapp.client.model;
 
-import java.net.URI;
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import org.springframework.lang.Nullable;
-import java.time.OffsetDateTime;
+import jakarta.annotation.Generated;
 import jakarta.validation.constraints.NotNull;
 
-
-import java.util.*;
-import jakarta.annotation.Generated;
+import java.util.Objects;
 
 /**
  * AuthRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-10-23T17:05:35.167278-04:00[America/New_York]", comments = "Generator version: 7.16.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-10-31T06:19:25.366540-04:00[America/New_York]", comments = "Generator version: 7.16.0")
 public class AuthRequest {
 
   private String username;
