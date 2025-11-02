@@ -36,35 +36,13 @@ Feature: Product Service
     Then response status is 404
 
 
+  @DeleteProduct
+  Scenario: Delete existing product id should return 204
+    Given a product exists with title 'Test Product New', type ELECTRONICS and price 45.47
+    When user deletes an existing product
+    Then response status is 204
 
   @DeleteProduct @Negative
   Scenario: Delete non existing product id should fail with 404
     When user deletes a non existing product
     Then response status is 404
-
-
-#  @AddProduct @Negative
-#  Scenario: Add new product with without title or price should return 200
-#    When user adds new product with title 'test' and price 45.45
-#    Then response status is 400
-#    And error message contains 'Bad Request'
-#    When user adds new product with title 'Test' and price -1
-#    Then response status is 400
-#    And error message contains 'Bad Request'
-#    When user adds new product with title '' and price -1
-#    Then response status is 400
-#    And error message contains 'Bad Request'
-#
-#  @UpdateProduct
-#  Scenario: Update an existing product should return 201
-#    When user updates product with title 'Test Product New' and price 45.45
-#    Then response status is 201
-#    And product title is 'Test Product New'
-#    And product price is 45.45
-#
-#  @UpdateProduct @Negative
-#  Scenario: Update a non existing product should return 404
-#    When user updates product with title 'Test Product New' and price 45.45
-#    Then response status is 201
-#    And product title is 'Test Product New'
-#    And product price is 45.45

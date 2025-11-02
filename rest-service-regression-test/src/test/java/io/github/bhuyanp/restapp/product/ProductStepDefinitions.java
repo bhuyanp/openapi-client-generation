@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -120,6 +121,19 @@ public class ProductStepDefinitions {
         }
     }
 
+    @When("user deletes an existing product")
+    public void userDeletesAnExistingProduct() {
+        try {
+            ResponseEntity<Void> productResponseEntity = productsApi.deleteProduct(context.getProducts().getFirst().getId());
+            context.setHttpStatusCode(productResponseEntity.getStatusCode().value());
+            context.setProducts(Collections.EMPTY_LIST);
+        } catch (DownstreamException dse) {
+            log.info("DownstreamException inside delete product.", dse);
+            context.setHttpStatusCode(dse.getHttpStatus().value());
+            context.setErrorMessage(dse.getMessage());
+        }
+    }
+
     @When("user deletes a non existing product")
     public void userDeletesANonExistingProduct() {
         try {
@@ -167,7 +181,4 @@ public class ProductStepDefinitions {
     public void productIdIsUUID() {
         assertThat(UUID.fromString(context.getProducts().getFirst().getId())).isNotNull();
     }
-
-
-
 }
